@@ -1,0 +1,7 @@
+.env
+.env.*
+
+google_credentials.json
+gpt_responses.jsonl
+
+dockerfile
