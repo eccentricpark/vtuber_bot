@@ -17,6 +17,7 @@ pip install -r requirements.txt
 
 ## 2. .env는 직접 구성하세요.
 모든 설정 정보는 .env 파일에 들어 가 있습니다.
+
 때문에, 그냥 실행하면 오류가 발생합니다.
 
 아래는 .env 파일의 예시입니다.
@@ -47,7 +48,7 @@ Anaconda에서도 작업 가능합니다.
 ```
 conda env list
 ```
-
+<br><br><br>
 
 만약, anaconda로 가상환경을 새로 만들고 싶다면 아래와 같이 입력하세요.
 
@@ -58,3 +59,12 @@ conda env list
 ```
 conda create -n your_environment_name python=3.8
 ```
+
+
+<br><br><br><br><br>
+
+## 4. Azure, Twitch
+
+API는 Azure와 Twitch API를 사용했습니다.
+
+OpenAI의 GPT API는 Azure에서도 발급 가능합니다.
