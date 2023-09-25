@@ -5,3 +5,5 @@ google_credentials.json
 gpt_responses.jsonl
 
 dockerfile
+
+__pycache__

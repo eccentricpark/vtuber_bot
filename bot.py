@@ -6,10 +6,10 @@ import datetime
 import json
 import random
 import asyncio
-from src.config.libaray_config import get_openai_object, get_twitch_access_token
-from chat_gpt import generate_chat_completion
-from text_to_speech import TextToSpeech
-from chat_filter import ChatFilter
+from src.config.libaray_config import get_twitch_access_token
+from src.chat_gpt import generate_chat_completion
+from src.text_to_speech import TextToSpeech
+from src.chat_filter import ChatFilter
 from xml.sax.saxutils import escape
 
 import warnings

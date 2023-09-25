@@ -1,4 +1,3 @@
-import os
 import azure.cognitiveservices.speech as speechsdk
 import asyncio
 from src.config.libaray_config import get_tts_values
