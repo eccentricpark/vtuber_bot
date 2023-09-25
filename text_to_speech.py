@@ -1,13 +1,10 @@
 import os
 import azure.cognitiveservices.speech as speechsdk
 import asyncio
-from dotenv import load_dotenv
-load_dotenv(verbose=True)
+from src.config.libaray_config import get_tts_values
 
 #Creates an instance of a speech config with specified subscription key and service region.
-key = os.getenv('TTS_AZURE_KEY')
-region = os.getenv("TTS_AZURE_REGION")
-
+key, region = get_tts_values()
 
 class TextToSpeech:
     def __init__(self):

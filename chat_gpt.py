@@ -1,7 +1,7 @@
 from src.config.libaray_config import get_openai_object
 
 async def generate_chat_completion(prompt, model="vtuber_test", temperature=1, max_tokens=200):
-    current_messages = messages
+    current_messages = prompt
     openai = get_openai_object()
 
     # 컨텍스트 메시지 출력
