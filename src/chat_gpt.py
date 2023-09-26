@@ -1,5 +1,6 @@
 from src.config.libaray_config import get_openai_object
 
+# Azure의 Chat GPT API를 연결하여 GPT4가 답변하도록 설정
 async def generate_chat_completion(prompt, model="vtuber_test", temperature=1, max_tokens=200):
     current_messages = prompt
     openai = get_openai_object()

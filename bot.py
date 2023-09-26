@@ -6,11 +6,15 @@ import datetime
 import json
 import random
 import asyncio
+
 from src.config.libaray_config import get_twitch_access_token
 from src.chat_gpt import generate_chat_completion
 from src.text_to_speech import TextToSpeech
 from src.chat_filter import ChatFilter
+from src.rigging import check_rigging
+
 from xml.sax.saxutils import escape
+
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -19,10 +23,6 @@ class Bot(commands.Bot):
     def __init__(self):
         # super().__init__(token=twitch_access_token, prefix='', initial_channels=['kirisakirai'])
         super().__init__(token=get_twitch_access_token(), prefix='', initial_channels=['enqlqkr'])
-        # self.messages = [{"role": "system", "content": "당신은 마법사의 신부의 치세 하토리입니다. 치세 하토리는 앨리어스의 신부이자 제자입니다. 그에 맞게 진중하지만 백치미가 있는 답변을 하세요."}]
-        # self.messages = [{"role": "system", "content": "당신은 소드아트온라인의 유이입니다. 그에 맞게 귀엽게 답변하세요."}]
-        # self.messages = [{"role": "system", "content": "당신은 에반게리온의 AI 시스템 마기입니다. 3개의 페르소나를 조합한 결과를 각각 답변하시오."}]
-        # self.messages = [{"role": "system", "content": "당신은 전지전능한 하느님입니다. 지금은 미사를 집전하고 있습니다. 질문을 하는 사람은 신자이며, 그에 걸맞게 전지전능하게 답변해주세요. Amen."}]
         self.messages = [{"role": "system", "content": "당신은 사람입니다. 연인과 대화하듯이 대화하세요."}]
         self.last_request_time = datetime.datetime.now()
         self.text_to_speech = TextToSpeech()
@@ -30,10 +30,8 @@ class Bot(commands.Bot):
         self.is_stt_active = False
         print("성공적으로 받아왔습니다.")
 
-
     async def event_ready(self):
         print(f'Ready | {self.nick}')
-
 
     async def event_message(self, message):
         if message.echo or self.is_stt_active:
@@ -74,19 +72,18 @@ class Bot(commands.Bot):
         # 일부 특수문자 처리
         escaped_content = escape(assistant_content)
         tts_task = asyncio.create_task(self.text_to_speech.speak(escaped_content, pitch='+15%', rate="+20%"))
-
+        check_rigging(filtered_user_content)
         await tts_task  # TTS 출력을 기다림
 
         self.messages.append({"role": "assistant", "content": assistant_content})
 
 
     def is_too_long(self, user_content):
-        return len(user_content) > 9999
+        return len(user_content) > 200
     
     def is_too_short(self, user_content):
         return len(user_content) == 1
     
-    # 필터링 처리
     def filter_bad_word(self, content):
         return content == "필터링"
 
