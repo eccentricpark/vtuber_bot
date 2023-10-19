@@ -19,6 +19,8 @@ from xml.sax.saxutils import escape
 import warnings
 warnings.filterwarnings('ignore')
 
+# 완전히 받아오는데 시간이 걸립니다.
+# 그래서 대략 10초 기다렸다가 테스트 진행해야 합니다.
 class Bot(commands.Bot):
     def __init__(self):
         # super().__init__(token=twitch_access_token, prefix='', initial_channels=['kirisakirai'])

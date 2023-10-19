@@ -12,8 +12,8 @@ import numpy as np
 # pyautogui.hotkey('N1')
 
 hello_keywords = ['안녕', '반가워', '반갑다', '하이', 'ㅎㅇ', 'hi', 'hello']
-happy_keywords = ['기뻐', '너무 기쁘다', '행복해', '행복하다', '넘 좋아', '완전 굿']
-shy_keywords = ['좋아']
+happy_keywords = ['기뻐', '너무 기쁘다', '행복해', '행복하다', '행복']
+shy_keywords = ['사랑', '사랑해']
 
 
 # 키워드 포함 유무 확인
