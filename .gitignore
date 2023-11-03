@@ -1,9 +1,8 @@
 .env
 .env.*
-
-google_credentials.json
-gpt_responses.jsonl
-
 dockerfile
 
+*.json
+*.jsonl
+prompt.py
 __pycache__

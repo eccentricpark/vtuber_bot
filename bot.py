@@ -4,23 +4,22 @@
 from twitchio.ext import commands
 import datetime
 import asyncio
-import random
-import json
+import os
 
 from src.config.libaray_config import get_twitch_access_token
 from src.chat_gpt import generate_chat_completion
 from src.text_to_speech import TextToSpeech
-from src.config.prompt import get_mao_prompt3, get_mao_prompt
 from src.config.read_json import read_json_file
 
 import warnings
 warnings.filterwarnings('ignore')
 
+mao = os.getenv("PROMPT_METADATA")
+
 class Bot(commands.Bot):
     def __init__(self):
         super().__init__(token=get_twitch_access_token(), prefix='', initial_channels=['enqlqkr'])
-        # self.messages = [{"role": "system", "content": get_mao_prompt3()}]
-        self.messages = read_json_file('./mao.json')
+        self.messages = read_json_file('./mao3.json')
         self.last_request_time = datetime.datetime.now()
         self.text_to_speech = TextToSpeech()
         self.is_speak = False
