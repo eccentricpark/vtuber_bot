@@ -16,10 +16,14 @@ warnings.filterwarnings('ignore')
 
 mao = os.getenv("PROMPT_METADATA")
 
+
+
+
 class Bot(commands.Bot):
     def __init__(self):
         super().__init__(token=get_twitch_access_token(), prefix='', initial_channels=['enqlqkr'])
-        self.messages = read_json_file('./mao3.json')
+        # self.messages = read_json_file('./mao3.json')
+        self.messages = read_json_file('./mao11_06.json')
         self.last_request_time = datetime.datetime.now()
         self.text_to_speech = TextToSpeech()
         self.is_speak = False
