@@ -1,76 +1,101 @@
-# pyautogui 라이브러리 설치
-# pip install pyautogui
+import asyncio
+import websockets
+import json
+# from src.config.websocket_service import WebsocketService
+# from src.config.libaray_config import get_websocket_url
 
-import pyautogui
-import time
-import numpy as np
-
-# VTube Studio 창으로 이동 (창의 좌표는 시스템에 따라 다를 수 있습니다)
-
-
-# 단축키를 시뮬레이션 (예: Ctrl + T)
-# pyautogui.hotkey('N1')
+from config.websocket_service import WebsocketService
+from config.libaray_config import get_websocket_url
 
 hello_keywords = ['안녕', '반가워', '반갑다', '하이', 'ㅎㅇ', 'hi', 'hello']
 happy_keywords = ['기뻐', '너무 기쁘다', '행복해', '행복하다', '행복']
 shy_keywords = ['사랑', '사랑해']
 
+# api 상태 확인
+api_state_request = {
+    "apiName": "VTubeStudioPublicAPI",
+    "apiVersion": "1.0",
+    "requestID": "requestMyState",
+    "messageType": "APIStateRequest"
+}
 
-# 키워드 포함 유무 확인
-def is_contain_action(content, target):
-  return target in content
+# 토큰 생성
+token_create_request = {
+    "apiName": "VTubeStudioPublicAPI",
+    "apiVersion": "1.0",
+    "requestID": "Authentication_MAO_01",
+    "messageType": "AuthenticationTokenRequest",
+    "data": {
+            "pluginName": "MAO_Plugin",
+            "pluginDeveloper": "Mind_of_MAO",
+            "pluginIcon": ""
+    }
+}
 
+# 토큰 인증 유무 검사
+token_authentication_check = {
+    "apiName": "VTubeStudioPublicAPI",
+    "apiVersion": "1.0",
+    "requestID": "Authentication_MAO_02",
+    "messageType": "AuthenticationRequest",
+    "data": {
+            "pluginName": "MAO_Plugin",
+            "pluginDeveloper": "Mind_of_MAO",
+            "authenticationToken": "token"
+    }
+}
 
-# 상태값에 따라 키 코드 반환
-def get_key_code(state_code):
-  key_code = '0'
+# 현재 표시된 모델 정보 불러오기
+model_load_request = {
+    "apiName": "VTubeStudioPublicAPI",
+    "apiVersion": "1.0",
+    "requestID": "Load_Model_MAO",
+    "messageType": "CurrentModelRequest"
+}
 
-  if(state_code == 'ACTION_HELLO'):
-    key_code = '3'
+# 모델의 핫키 정보 불러오기
+model_hotkey_list_request = {
+    "apiName": "VTubeStudioPublicAPI",
+    "apiVersion": "1.0",
+    "requestsID": "Hotkeys_List_MAO_02",
+    "messageType": "HotkeysInCurrentModelRequest",
+    "data": {
+            "modelID": ""
+    }
+}
 
-  elif(state_code == 'ACTION_HAPPY'):
-    key_code = '2'
+model_hotkey_execute_request = {
+    "apiName": "VTubeStudioPublicAPI",
+    "apiVersion": "1.0",
+    "requestID": "MAO_Test",
+    "messageType": "HotkeyTriggerRequest",
+    "data": {
+            "hotkeyID": "43a739238c1e4d04917f23ff0d75c607",
+            "itemInstanceID": ""
+    }
+}
 
-  elif(state_code == 'ACTION_SHY'):
-    key_code = '4'
+url = get_websocket_url()
 
-  return key_code
+async def execute_websocket():
+    websocket_service = WebsocketService()
+    async with websockets.connect(url) as websocket:
+        authentication_token = await websocket_service.get_authentication_token(token_create_request, websocket)
+        modified_token_authentication = websocket_service.modify_authentication_token(token_authentication_check, authentication_token)
+        token_check_response = await websocket_service.get_json_by_response(json.loads(modified_token_authentication), websocket)
+        print(token_check_response)
 
+        api_state_check_response = await websocket_service.get_json_by_response(api_state_request, websocket)
+        print(api_state_check_response)
 
-# 리깅 동작을 결정하는 키워드 유무 확인
-# 반복문으로 리스트 순회
-# 추후, 딕셔너리 하나로 순회하게끔 변경 예정
-def get_state(content):
-  for keyword in hello_keywords:
-    if is_contain_action(content, keyword):
-      return 'ACTION_HELLO'
-    
-  for keyword in happy_keywords:
-    if is_contain_action(content, keyword):
-      return 'ACTION_HAPPY'
-    
-  for keyword in shy_keywords:
-    if is_contain_action(content, keyword):
-      return 'ACTION_SHY'
+        model_id = await websocket_service.get_model_id(model_load_request, websocket)
+        modified_model_hotkey_list_request = websocket_service.modify_model_id(model_hotkey_list_request, model_id)
+        action_list = await websocket_service.get_json_by_response(json.loads(modified_model_hotkey_list_request), websocket)
+        print(action_list)
 
+        action = await websocket_service.get_json_by_response(model_hotkey_execute_request, websocket)
+        print(action)
 
-# 키코드로 리깅 제어
-def press(state_code):
-  key_code = get_key_code(state_code)
+tasks = [ asyncio.ensure_future(execute_websocket()) ]
 
-  # 0은 입력 안함 (필요 없음)
-  if(key_code == '0'):
-    return
-  
-  pyautogui.moveTo(400, 500)
-  pyautogui.click()
-  
-  pyautogui.keyDown(key_code)
-  time.sleep(0.1)
-  pyautogui.keyUp(key_code)
-  # pyautogui.press(key_code)
-
-
-def check_rigging(input):
-  state_code = get_state(input)
-  press(state_code)
+asyncio.get_event_loop().run_until_complete(asyncio.wait(tasks))
