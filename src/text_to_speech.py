@@ -18,7 +18,7 @@ class TextToSpeech:
         # 기본 스피커로 음성을 재생합니다.
         self.audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
 
-    async def speak(self, text, pitch='+15%', rate='+25%'):
+    async def speak(self, text, pitch='+15%', rate='+20%'):
         ssml = f"""
         <speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='ko-KR'>
             <voice name='ko-KR-SoonBokNeural'>
