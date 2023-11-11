@@ -3,7 +3,7 @@ from src.openai_service.openai_config import get_openai_object
 def get_ai_response(message):
     try:
         response = get_openai_object().chat.completions.create(
-            model="gpt-3.5-turbo-0613",
+            model="gpt-4-0613", 
             messages=[
                 {
                   "role": "system",

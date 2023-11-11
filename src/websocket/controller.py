@@ -1,7 +1,7 @@
 import asyncio
 import json
 from websockets import connect
-
+import random
 
 # 토큰 인증 유무 검사
 token_authentication_check = {
@@ -99,7 +99,7 @@ model_hotkey_execute_request = [
     }
 ]
 
-async def ttt():
+async def get_rigging():
     # VTube Studio API 웹소켓 서버의 URI
     ws_uri = 'ws://localhost:8001'
     async with connect(ws_uri) as websocket:
@@ -112,9 +112,16 @@ async def ttt():
         await websocket.send(json.dumps(model_hotkey_list_request))
         response = await websocket.recv()
 
-        await websocket.send(json.dumps(model_hotkey_execute_request[2]))
+        index = get_index_random(0, 5)
+        await websocket.send(json.dumps(model_hotkey_execute_request[index]))
         response = await websocket.recv()
         print(response)
         # await authenticate_and_listen(ws_uri)
 
- 
+
+def get_index_random(min, max):
+    """
+    min : 최소 인덱스
+    max : 최대 인덱스
+    """
+    return random.randint(min, max)

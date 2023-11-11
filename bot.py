@@ -4,14 +4,17 @@
 from twitchio.ext import commands
 import datetime
 import asyncio
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
-from src.config.libaray_config import get_twitch_access_token
-from src.openai.chat_gpt import generate_chat_completion
-from src.openai.open_ai import get_ai_response
-from src.text_to_speech import TextToSpeech
+
+from src.config.twitch_config import get_twitch_access_token
 from src.config.read_json import read_json_file
-from src.websocket.controller import ttt
 
+from src.openai_service.open_ai import get_ai_response
+
+from src.azure_service.text_to_speech import TextToSpeech
+from src.websocket.controller import ttt
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -22,18 +25,16 @@ api_state_request = {
     "apiVersion": "1.0",
     "requestID": "requestMyState",
     "messageType": "APIStateRequest"
-}
-
-
+}    
+    
 class Bot(commands.Bot):
     def __init__(self):
         super().__init__(token=get_twitch_access_token(), prefix='', initial_channels=['enqlqkr'])
-        # self.messages = read_json_file('./mao3.json')
-        self.messages = []
+        self.messages = read_json_file('./mao11_06.json')
         self.last_request_time = datetime.datetime.now()
         self.text_to_speech = TextToSpeech()
         self.is_speak = False
-        self.websocket_uri = "ws://localhost:8001"
+        # self.websocket_uri = "ws://localhost:8001"
         print("성공적으로 받아왔습니다.")
 
     async def event_ready(self):
@@ -51,16 +52,16 @@ class Bot(commands.Bot):
         self.is_speak = True
         
         # GPT 답변 생성
-        # assistant_content = generate_chat_completion(self.messages)
         assistant_content = get_ai_response(self.messages)
-        print(f"GPT : {assistant_content}")
+        print(f"MAO : {assistant_content}")
 
         # pitch : 음의 높낮이
         # rate : 빠르기
-        tts_task = asyncio.create_task(self.text_to_speech.speak(assistant_content, pitch='+15%', rate="+20%"))
+        tts_task = asyncio.create_task(self.text_to_speech.speak(assistant_content, pitch='+15%', rate="+25%"))
         # await ttt()
         await tts_task  # TTS 출력을 기다림
         self.is_speak = False
         
         # 이게 있어야 GPT 답변을 토대로 기억함.
         self.messages.append({"role": "assistant", "content": assistant_content})
+        
