@@ -12,7 +12,7 @@ token_authentication_check = {
     "data": {
             "pluginName": "MAO_Plugin",
             "pluginDeveloper": "Mind_of_MAO",
-            "authenticationToken": "e5cb1643a0c4810a5fe8125d9396824a87802f982eb4e17ace856680bc2ad8b1"
+            "authenticationToken": "20590682c97a6418fe222eebafaa1fc7fb19993097847b979a1d517db79adeff"
     }
 }
 
@@ -99,7 +99,7 @@ model_hotkey_execute_request = [
     }
 ]
 
-async def get_rigging():
+async def act_rigging(response_message):
     # VTube Studio API 웹소켓 서버의 URI
     ws_uri = 'ws://localhost:8001'
     async with connect(ws_uri) as websocket:
@@ -112,14 +112,25 @@ async def get_rigging():
         await websocket.send(json.dumps(model_hotkey_list_request))
         response = await websocket.recv()
 
-        index = get_index_random(0, 5)
+        index = get_index(response_message)
         await websocket.send(json.dumps(model_hotkey_execute_request[index]))
         response = await websocket.recv()
         print(response)
         # await authenticate_and_listen(ws_uri)
 
+def get_index(response_message):
+    index = 0
+    if "안녕" in response_message:
+        index = 0
+    elif "흥" in response_message:
+        index = 3
+    elif "좋아" in response_message:
+        index = 4
+    return index
 
-def get_index_random(min, max):
+
+
+def get_index_random(min=0, max=5):
     """
     min : 최소 인덱스
     max : 최대 인덱스

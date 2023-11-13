@@ -14,7 +14,7 @@ from src.config.read_json import read_json_file
 from src.openai_service.open_ai import get_ai_response
 
 from src.azure_service.text_to_speech import TextToSpeech
-from src.websocket.controller import ttt
+from src.websocket.controller import act_rigging
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -58,7 +58,7 @@ class Bot(commands.Bot):
         # pitch : 음의 높낮이
         # rate : 빠르기
         tts_task = asyncio.create_task(self.text_to_speech.speak(assistant_content, pitch='+15%', rate="+25%"))
-        # await ttt()
+        await act_rigging(assistant_content)
         await tts_task  # TTS 출력을 기다림
         self.is_speak = False
         
