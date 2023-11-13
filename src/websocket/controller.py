@@ -12,7 +12,7 @@ token_authentication_check = {
     "data": {
             "pluginName": "MAO_Plugin",
             "pluginDeveloper": "Mind_of_MAO",
-            "authenticationToken": "20590682c97a6418fe222eebafaa1fc7fb19993097847b979a1d517db79adeff"
+            "authenticationToken": "108786a7e59cf2565b151a0e02a4f6d96b76e6d68797eeda48167d26ead95d26"
     }
 }
 

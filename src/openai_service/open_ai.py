@@ -19,7 +19,3 @@ def get_ai_response(message):
     except Exception as e:
         print(f"An error occurred: {e}")
         raise "An error occurred while processing your request."
-
-
-
-
