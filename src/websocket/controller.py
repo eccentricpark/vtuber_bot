@@ -1,7 +1,7 @@
 import asyncio
 import json
-from websockets import connect
 import random
+from websockets import connect
 
 # 토큰 인증 유무 검사
 token_authentication_check = {
@@ -12,7 +12,7 @@ token_authentication_check = {
     "data": {
             "pluginName": "MAO_Plugin",
             "pluginDeveloper": "Mind_of_MAO",
-            "authenticationToken": "108786a7e59cf2565b151a0e02a4f6d96b76e6d68797eeda48167d26ead95d26"
+            "authenticationToken": "814a71af03effe37331c5c7380b33fc89739290c4034e768783cd850b58a228b"
     }
 }
 
@@ -96,6 +96,26 @@ model_hotkey_execute_request = [
                 "hotkeyID": "43a739238c1e4d04917f23ff0d75c607",
                 "itemInstanceID": ""
         }
+    },
+    {
+        "apiName": "VTubeStudioPublicAPI",
+        "apiVersion": "1.0",
+        "requestID": "MAO_Test",
+        "messageType": "HotkeyTriggerRequest",
+        "data": {
+                "hotkeyID": "2ca71b056ee54ff7983f3b241a02b1e5",
+                "itemInstanceID": ""
+        }
+    },
+    {
+        "apiName": "VTubeStudioPublicAPI",
+        "apiVersion": "1.0",
+        "requestID": "MAO_Test",
+        "messageType": "HotkeyTriggerRequest",
+        "data": {
+                "hotkeyID": "91b5b1d5dbc64a03aff2a1f154d70dbd",
+                "itemInstanceID": ""
+        }
     }
 ]
 
@@ -108,31 +128,56 @@ async def act_rigging(response_message):
 
         await websocket.send(json.dumps(model_load_request))
         response = await websocket.recv()
+        
 
         await websocket.send(json.dumps(model_hotkey_list_request))
         response = await websocket.recv()
+        print(response)
 
         index = get_index(response_message)
         await websocket.send(json.dumps(model_hotkey_execute_request[index]))
         response = await websocket.recv()
-        print(response)
         # await authenticate_and_listen(ws_uri)
 
 def get_index(response_message):
     index = 0
-    if "안녕" in response_message:
-        index = 0
-    elif "흥" in response_message:
-        index = 3
-    elif "좋아" in response_message:
-        index = 4
+    length = len(model_hotkey_execute_request) - 1
+    index = random.randint(0, length)
+
+    # if "안녕" in response_message:
+    #     index = 0
+    # elif "아니야" in response_message:
+    #     index = 3
+    # elif "흥" in response_message:
+    #     index = 3
+    # elif "좋아" in response_message:
+    #     index = 4
+    # else:
+    #     index = random.randint(0, length)
+
     return index
 
+# mao motion 메타데이터 가져오기
+async def get_metadata():
+    ws_uri = 'ws://localhost:8001'
+    async with connect(ws_uri) as websocket:
+        await websocket.send(json.dumps(token_authentication_check))
+        response = await websocket.recv()
+        print(response)
 
+        await websocket.send(json.dumps(model_load_request))
+        response = await websocket.recv()
+        print(response)
 
-def get_index_random(min=0, max=5):
-    """
-    min : 최소 인덱스
-    max : 최대 인덱스
-    """
-    return random.randint(min, max)
+        await websocket.send(json.dumps(model_hotkey_list_request))
+        response = json.loads(await websocket.recv())
+        hotkeyList = response["data"]["availableHotkeys"]
+        write_json(hotkeyList)
+
+# json 파일로 저장하기
+def write_json(response):
+    # JSON 파일로 저장
+    with open("mao_metadata.json", "w") as json_file:
+        json.dump(response, json_file, indent=4)
+
+# asyncio.run(get_metadata())
