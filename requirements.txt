@@ -44,6 +44,7 @@ PyAudio==0.2.13
 PyAutoGUI==0.9.54
 pydantic==2.4.2
 pydantic_core==2.10.1
+pygame==2.5.2
 PyGetWindow==0.0.9
 PyMsgBox==1.0.9
 pyperclip==1.8.2
