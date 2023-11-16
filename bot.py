@@ -1,12 +1,15 @@
 from twitchio.ext import commands
 import datetime
 import asyncio
+import time
 
 from src.config.twitch_config import get_twitch_access_token
 from src.config.read_json import read_json_file
 from src.openai_service.open_ai import get_ai_response
 from src.azure_service.text_to_speech import TextToSpeech
 from src.websocket.controller import act_rigging
+
+from src.play_instrument import play_sound
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -18,10 +21,13 @@ class Bot(commands.Bot):
         self.last_request_time = datetime.datetime.now()
         self.text_to_speech = TextToSpeech()
         self.is_speak = False
+        self.is_active_instrument = False
         print("성공적으로 받아왔습니다.")
 
     async def event_ready(self):
         print(f'Ready | {self.nick}')
+
+    
 
     async def event_message(self, message):
         if self.is_speak:
@@ -34,10 +40,39 @@ class Bot(commands.Bot):
         self.messages.append({"role": "user", "content": user_content})  
         self.is_speak = True
         
-        # GPT 답변 생성
-        assistant_content = get_ai_response(self.messages)
-        print(f"MAO : {assistant_content}")
+        if(self.is_active_instrument):
+            assistant_content = f"{user_content} 곡을 연주 해 볼게"
+            print(f"MAO : {assistant_content}")
+            
+            tts_task = asyncio.create_task(self.text_to_speech.speak(assistant_content, pitch='+15%', rate="+25%"))
+            await tts_task  # TTS 출력을 기다림
+            self.is_speak = False
+            # 이게 있어야 GPT 답변을 토대로 기억함.
+            self.messages.append({"role": "assistant", "content": assistant_content})
+            time.sleep(1)
+            play_sound('kalimba.mp3')
+            self.is_active_instrument = False
+            return
 
+        # 악기 연주 프롬프트가 들어 오면 실행
+        if(self.check_listen_instrument(user_content)):
+            assistant_content = "어떤 곡을 연주할까? 곡 이름만 말해줘."
+            print(f"MAO : {assistant_content}")
+
+            self.is_active_instrument = True
+            await self.gpt_response(assistant_content)
+        else:
+            # GPT 답변 생성
+            assistant_content = get_ai_response(self.messages)
+            print(f"MAO : {assistant_content}")
+            await self.gpt_response(assistant_content)
+        
+    def check_listen_instrument(self, user_content):
+        want_listen = ["악기 연주 해 줘", "악기 연주를 듣고 싶어"]
+        # 조건에 따라 변수 값 변경
+        return user_content in want_listen
+            
+    async def gpt_response(self, assistant_content):
         # pitch : 음의 높낮이
         # rate : 빠르기
         tts_task = asyncio.create_task(self.text_to_speech.speak(assistant_content, pitch='+15%', rate="+25%"))

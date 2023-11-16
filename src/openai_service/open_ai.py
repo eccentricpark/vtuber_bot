@@ -11,8 +11,11 @@ def get_ai_response(message):
                 },
                 *message
             ],
-            temperature=0.8,
-            max_tokens=300
+            temperature=0.9,
+            max_tokens=300,
+            top_p=0.8,
+            frequency_penalty=1,
+            presence_penalty=0.4
         )
         message = response.choices[0].message.content
         return message

@@ -12,7 +12,7 @@ token_authentication_check = {
     "data": {
             "pluginName": "MAO_Plugin",
             "pluginDeveloper": "Mind_of_MAO",
-            "authenticationToken": "814a71af03effe37331c5c7380b33fc89739290c4034e768783cd850b58a228b"
+            "authenticationToken": "9ab46981ab58883a8cb6fc65a9582d31ad082030ee91f7bf49055677fbdb0703"
     }
 }
 
@@ -129,15 +129,12 @@ async def act_rigging(response_message):
         await websocket.send(json.dumps(model_load_request))
         response = await websocket.recv()
         
-
         await websocket.send(json.dumps(model_hotkey_list_request))
         response = await websocket.recv()
-        print(response)
 
         index = get_index(response_message)
         await websocket.send(json.dumps(model_hotkey_execute_request[index]))
         response = await websocket.recv()
-        # await authenticate_and_listen(ws_uri)
 
 def get_index(response_message):
     index = 0
