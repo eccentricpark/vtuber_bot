@@ -14,3 +14,5 @@ def play_sound(file):
     # 음악이 재생될 동안 프로그램이 종료되지 않도록 대기
     while pygame.mixer.music.get_busy(): 
         pygame.time.Clock().tick(10)
+
+    pygame.quit()
