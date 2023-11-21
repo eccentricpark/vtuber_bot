@@ -1,11 +1,9 @@
 from twitchio.ext import commands
 import datetime
 import asyncio
-import time
-import json
 
 from src.config.twitch_config import get_twitch_access_token
-from src.config.read_json import read_json_file, write_json
+from src.config.custom_json import read_json_file, write_json
 from src.openai_service.open_ai import get_ai_response, get_announce_ai_response
 from src.azure_service.text_to_speech import TextToSpeech
 from src.websocket.controller import act

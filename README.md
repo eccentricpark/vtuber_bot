@@ -62,9 +62,3 @@ conda create -n your_environment_name python=3.8
 
 
 <br><br><br><br><br>
-
-## 4. Azure, Twitch
-
-API는 Azure와 Twitch API를 사용했습니다.
-
-OpenAI의 GPT API는 Azure에서도 발급 가능합니다.
