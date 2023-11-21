@@ -1,7 +1,10 @@
 import asyncio
 import json
 import random
+import os
 from websockets import connect
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
 # 토큰 인증 유무 검사
 token_authentication_check = {
@@ -12,7 +15,7 @@ token_authentication_check = {
     "data": {
             "pluginName": "MAO_Plugin",
             "pluginDeveloper": "Mind_of_MAO",
-            "authenticationToken": "df0179434edc93cc1efb7067732b0d8cf411783d294ce86b3143df239662acfc"
+            "authenticationToken": "5ca81c03741d4beccb4a5865877f04a7b896473f9fa00d5000c3a9a5b5353f68"
     }
 }
 
@@ -130,7 +133,7 @@ model_hotkey_execute_request = [
 ]
 async def act_kalimba():
     # VTube Studio API 웹소켓 서버의 URI
-    ws_uri = 'ws://localhost:8001'
+    ws_uri = os.getenv('VTUBE_URI')
     async with connect(ws_uri) as websocket:
         await websocket.send(json.dumps(token_authentication_check))
         response = await websocket.recv()
@@ -146,7 +149,7 @@ async def act_kalimba():
 
 async def act_rigging(response_message):
     # VTube Studio API 웹소켓 서버의 URI
-    ws_uri = 'ws://localhost:8001'
+    ws_uri = os.getenv('VTUBE_URI')
     async with connect(ws_uri) as websocket:
         await websocket.send(json.dumps(token_authentication_check))
         response = await websocket.recv()
@@ -163,7 +166,7 @@ async def act_rigging(response_message):
 
 async def act_roll_back():
     # VTube Studio API 웹소켓 서버의 URI
-    ws_uri = 'ws://localhost:8001'
+    ws_uri = os.getenv('VTUBE_URI')
     async with connect(ws_uri) as websocket:
         await websocket.send(json.dumps(token_authentication_check))
         response = await websocket.recv()
@@ -184,7 +187,7 @@ def get_index(response_message):
 
 # mao motion 메타데이터 가져오기
 async def get_metadata():
-    ws_uri = 'ws://localhost:8001'
+    ws_uri = os.getenv('VTUBE_URI')
     async with connect(ws_uri) as websocket:
         await websocket.send(json.dumps(token_authentication_check))
         response = await websocket.recv()
