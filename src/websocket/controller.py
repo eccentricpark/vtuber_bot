@@ -15,7 +15,7 @@ token_authentication_check = {
     "data": {
             "pluginName": "MAO_Plugin",
             "pluginDeveloper": "Mind_of_MAO",
-            "authenticationToken": "5ca81c03741d4beccb4a5865877f04a7b896473f9fa00d5000c3a9a5b5353f68"
+            "authenticationToken": "6c17453db208f9c40eae06e192b8a397175d4d7f2bc4ce321dbfee0fec6abbf6"
     }
 }
 
@@ -161,28 +161,3 @@ async def act(index = 0, system_message=""):
 
         await websocket.send(json.dumps(model_hotkey_execute_request[index]))
         response = await websocket.recv()
-
-# mao motion 메타데이터 가져오기
-async def get_metadata():
-    ws_uri = os.getenv('VTUBE_URI')
-    async with connect(ws_uri) as websocket:
-        await websocket.send(json.dumps(token_authentication_check))
-        response = await websocket.recv()
-        print(response)
-
-        await websocket.send(json.dumps(model_load_request))
-        response = await websocket.recv()
-        print(response)
-
-        await websocket.send(json.dumps(model_hotkey_list_request))
-        response = json.loads(await websocket.recv())
-        hotkeyList = response["data"]["availableHotkeys"]
-        write_json(hotkeyList)
-
-# json 파일로 저장하기
-def write_json(response):
-    # JSON 파일로 저장
-    with open("mao_metadata.json", "w") as json_file:
-        json.dump(response, json_file, indent=4)
-
-# asyncio.run(get_metadata())

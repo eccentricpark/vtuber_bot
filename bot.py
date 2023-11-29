@@ -102,7 +102,9 @@ class Bot(commands.Bot):
     # 마법을 보여달라고 하면 거기에 맞춰 동작
     def check_magic(self, user_content):
         without_spaces = user_content.replace(" ", "")
-        keywords = ["마법보여줘", "마법한번보여줘", "마술보여줘", "마술한번부려봐","마술한번해봐"]
+        keywords = [
+            "마법보여줘", "마법한번보여줘", "마법보여줄수있어", "마법보여줄수있을까","마법한번보여줄수있어", "마법도보여줘",
+            "마술보여줘", "마술한번부려봐","마술한번해봐", "마술보여줄수있어","마술보여줄수있을까","마술한번보여줄수있어", "마술도보여줘"]
         return any(keyword in without_spaces for keyword in keywords)
             
     # TTS 음성 출력
